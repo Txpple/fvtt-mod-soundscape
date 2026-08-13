@@ -71,7 +71,7 @@ flags["fvtt-mod-soundscape"].sets = [
     id: "a1b2c3",             // random id, stable across edits
     name: "Animal Cries Day",
     active: true,
-    files: ["worlds/.../as_an_cryday1.ogg", ...],   // 1..n paths
+    files: ["worlds/my-world/sounds/crow-1.ogg", ...],   // 1..n paths
     playStyle: "interval",     // "interval" | "loop"
     interval: 25,              // seconds of silence (interval style only)
     intervalVariation: 5,      //   ± seconds
