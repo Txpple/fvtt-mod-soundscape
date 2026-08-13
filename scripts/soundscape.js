@@ -1,5 +1,5 @@
 /**
- * Soundscape — atmospheric area sounds for Foundry scenes.
+ * Soundscape — atmospheric sound for the active scene in Foundry.
  *
  * A scene carries N sound sets in `flags.fvtt-mod-soundscape.sets` (see design.md for the
  * binding scope). Each active set runs its own client-side scheduler: interval sets fire
@@ -186,9 +186,9 @@ Hooks.on("renderSceneConfig", (app, element) => {
           <i class="fa-solid fa-plus" inert></i> Add Blank Set
         </button>
       </div>
-      <p class="hint">Area sounds for this scene, played for everyone through the Ambient
-      volume channel. They quiet down during combat and can be gated to day or night by
-      scene darkness.</p>
+      <p class="hint">Atmospheric sound for this scene, played for everyone through the
+      Ambient volume channel. It quiets down during combat and can be gated to day or night
+      by scene darkness.</p>
     </div>
     <ul class="soundscape-list">
       ${rows || '<li class="empty">No sound sets yet — add one to bring this scene to life.</li>'}

@@ -1,10 +1,10 @@
 # Soundscape
 
-Atmospheric area sounds for Foundry VTT scenes. A scene carries any number of **sound
-sets**, each a pool of small audio files with a play style:
+Atmospheric sound for the active scene in Foundry VTT. A scene carries any number of
+**sound sets**, each a pool of small audio files with a play style:
 
 - **Interval sets** fire a random file from the pool, then wait *interval ± variation*
-  seconds of silence — the crow, the quiet, the distant dog that make an area feel alive.
+  seconds of silence — the crow, the quiet, the distant dog that make a place feel alive.
 - **Loop sets** play the pool as a continuous bed under equal-power crossfades. A single
   file loops seamlessly into itself with no loop-point authoring, and several files become
   a slowly evolving chorus that never repeats exactly and never cuts.

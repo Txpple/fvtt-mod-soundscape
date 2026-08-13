@@ -5,7 +5,7 @@ when in doubt, the answer that keeps Soundscape *smaller* is the right one.
 
 ## Mission
 
-Bring **area sounds** to Foundry scenes: a per-scene list of small mp3/wav one-shots that
+Bring **active-scene sound** to Foundry: a per-scene list of small mp3/wav one-shots that
 fire at randomized intervals (a crow, silence, a distant dog, silence…) plus seamless
 ambient beds (frogs, crickets, wind). Foundry has nothing in this shape — AmbientSound
 placeables are positional single-file loops, and Playlists have no concept of *silence
