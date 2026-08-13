@@ -1,0 +1,111 @@
+<div class="soundscape-editor standard-form">
+  <div class="soundscape-body">
+    <header class="set-header">
+      <input type="text" name="name" value="{{set.name}}" placeholder="Set name">
+      <label class="active-toggle" data-tooltip="Inactive sets are kept but never play">
+        <input type="checkbox" name="active" {{#if set.active}}checked{{/if}}> Active
+      </label>
+    </header>
+
+    <div class="form-group">
+      <label>Play Style</label>
+      <div class="form-fields style-radios">
+        <label><input type="radio" name="playStyle" value="interval"
+                      {{#if set.isInterval}}checked{{/if}}> Interval</label>
+        <label><input type="radio" name="playStyle" value="loop"
+                      {{#if set.isLoop}}checked{{/if}}> Loop</label>
+      </div>
+      {{#if set.isInterval}}
+      <p class="hint">A random file plays, then silence of interval ± variation. Bird cries,
+      distant howls, creaks.</p>
+      {{else}}
+      <p class="hint">A continuous bed under equal-power crossfades. One file loops seamlessly
+      into itself; several become a slowly evolving chorus.</p>
+      {{/if}}
+    </div>
+
+    {{#if set.isInterval}}
+    <div class="form-group">
+      <label>Interval (seconds)</label>
+      <div class="form-fields">
+        <input type="number" name="interval" value="{{set.interval}}" min="1" max="3600" step="0.5">
+        <span class="sep">±</span>
+        <input type="number" name="intervalVariation" value="{{set.intervalVariation}}"
+               min="0" max="3600" step="0.5" data-tooltip="Variation">
+      </div>
+    </div>
+    {{else}}
+    <div class="form-group">
+      <label>Crossfade (seconds)</label>
+      <div class="form-fields">
+        <input type="number" name="crossfade" value="{{set.crossfade}}" min="0.5" max="30" step="0.5">
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="form-group">
+      <label>Volume</label>
+      <div class="form-fields">
+        <range-picker name="volume" value="{{set.volume}}" min="0" max="1" step="0.05"></range-picker>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Volume Variation</label>
+      <div class="form-fields">
+        <range-picker name="volumeVariation" value="{{set.volumeVariation}}" min="0" max="1" step="0.05"></range-picker>
+      </div>
+      <p class="hint">Each play is randomly quieter by up to this fraction — never louder.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Pitch Variation (octaves)</label>
+      <div class="form-fields">
+        <range-picker name="pitchVariation" value="{{set.pitchVariation}}" min="0" max="1" step="0.05"></range-picker>
+      </div>
+      <p class="hint">Each play is pitched up or down by up to this many octaves — the same
+      cry never sounds quite the same twice. Around 0.1–0.2 is plenty.</p>
+    </div>
+
+    <div class="form-group">
+      <label>When to Play</label>
+      <div class="form-fields">
+        <select name="whenToPlay">
+          {{selectOptions whenToPlayOptions selected=set.whenToPlay}}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group files-group">
+      <label>Files ({{set.files.length}})</label>
+      <div class="form-fields file-column">
+        {{#if set.files.length}}
+        <ul class="file-list">
+          {{#each set.files}}
+          <li>
+            <a data-action="previewFile" data-index="{{@index}}" data-tooltip="Play this file">
+              <i class="fa-solid fa-play" inert></i>
+            </a>
+            <code>{{this}}</code>
+            <a data-action="removeFile" data-index="{{@index}}" data-tooltip="Remove file">
+              <i class="fa-solid fa-xmark" inert></i>
+            </a>
+          </li>
+          {{/each}}
+        </ul>
+        {{else}}
+        <p class="hint">No files yet — this set stays silent until it has at least one.</p>
+        {{/if}}
+        <button type="button" data-action="addFile">
+          <i class="fa-solid fa-file-audio" inert></i> Add Sound…
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="soundscape-footer">
+    <button type="button" data-action="save">
+      <i class="fa-solid fa-floppy-disk" inert></i> Save Changes
+    </button>
+  </footer>
+</div>

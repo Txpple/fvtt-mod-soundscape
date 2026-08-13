@@ -1,0 +1,46 @@
+<div class="sound-picker standard-form">
+  <header class="picker-bar">
+    <button type="button" class="icon" data-action="home" data-tooltip="Sound library">
+      <i class="fa-solid fa-book-open" inert></i>
+    </button>
+    <button type="button" class="icon" data-action="up" data-tooltip="Up one folder"
+            {{#if atRoot}}disabled{{/if}}>
+      <i class="fa-solid fa-turn-up" inert></i>
+    </button>
+    <code class="picker-path">{{path}}</code>
+  </header>
+
+  <input type="text" name="filter" placeholder="Filter…" autocomplete="off">
+
+  <ul class="picker-listing">
+    {{#each dirs}}
+    <li data-filterable="{{name}}">
+      <a class="dir-row" data-action="openDir" data-path="{{path}}">
+        <i class="fa-solid fa-folder" inert></i> {{name}}
+      </a>
+    </li>
+    {{/each}}
+    {{#each files}}
+    <li data-filterable="{{name}}" data-path="{{path}}"
+        class="file-row{{#if added}} added{{/if}}{{#if playing}} playing{{/if}}">
+      <a data-action="play" data-path="{{path}}" data-tooltip="Play / stop">
+        <i class="fa-solid fa-play" inert></i>
+      </a>
+      <span class="file-name">{{name}}</span>
+      <span class="pick-state">{{#if added}}<i class="fa-solid fa-check" inert></i>{{/if}}</span>
+      <a data-action="pick" data-path="{{path}}" data-tooltip="Add to the set">
+        <i class="fa-solid fa-plus" inert></i>
+      </a>
+    </li>
+    {{/each}}
+    {{#unless files.length}}{{#unless dirs.length}}
+    <li class="empty">Nothing here.</li>
+    {{/unless}}{{/unless}}
+  </ul>
+
+  <footer class="soundscape-footer">
+    <button type="button" data-action="done">
+      <i class="fa-solid fa-check" inert></i> Done
+    </button>
+  </footer>
+</div>
