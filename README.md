@@ -1,52 +1,68 @@
-# Soundscape
+# Open Roll 5e: Soundscape
 
-Atmospheric sound for the active scene in Foundry VTT. A scene carries any number of
-**sound sets**, each a pool of small audio files with a play style:
+A Foundry VTT module that gives each scene its own background sound. Foundry's ambient sounds are
+positional single-file loops, and playlists have no idea of silence between tracks, so there is no
+native way to say "a crow, then quiet, then a distant dog". Soundscape adds sound sets to a scene:
+pools of small audio files that either fire at random with silence in between or play as a
+continuous, seamless bed.
 
-- **Interval sets** fire a random file from the pool, then wait *interval ± variation*
-  seconds of silence — the crow, the quiet, the distant dog that make a place feel alive.
-- **Loop sets** play the pool as a continuous bed under equal-power crossfades. A single
-  file loops seamlessly into itself with no loop-point authoring, and several files become
-  a slowly evolving chorus that never repeats exactly and never cuts.
+## How it works
 
-Sets stack — farm animals on one clock, wolf howls on another, crickets looping underneath
-— and each can be varied per play in volume (randomly quieter, never louder) and pitch
-(± up to an octave), so the same cry never sounds quite the same twice. Sets can be gated
-to day or night by scene darkness, they quiet down automatically during combat (and fade
-back in when it ends), and everything plays through the **Ambient** volume channel so
-players' existing sliders apply.
+- **Interval sets fire random one-shots.** A random file from the pool plays, then *interval ±
+  variation* seconds of silence pass before the next. The same file never plays twice in a row.
+- **Loop sets play a continuous bed.** Each file overlaps the next under an equal-power crossfade.
+  A single file loops into itself with no loop points to author, and several files become a
+  slowly shifting chorus that never cuts.
+- **Sets stack.** A scene can carry any number of them: farm animals on one clock, wolf howls on
+  another, crickets looping underneath.
+- **Each play can vary.** Volume can drop at random (never rise above the set's level) and pitch
+  can shift up or down by up to an octave, so a repeated cry rarely sounds the same twice.
+- **Sets can follow the time of day.** A set can play always, only by day or only by night, judged
+  by the scene's darkness crossing 0.5. Moving the darkness slider starts and stops them live.
+- **Combat quiets the scene.** When a combat starts, interval sets fall silent and loop sets drop
+  low. Loops fade back up when the combat ends, and interval sets resume.
+- **Sound plays through the Ambient channel**, so each player's existing volume slider applies.
+- **Every client plays for itself.** Each client reads the scene and schedules its own sounds, with
+  no sockets and no server state. Two players hearing the owl a few seconds apart is intended.
 
-Entirely client-side and stateless: each client reads the scene and schedules for itself.
-No sockets, no dependencies, no bundled UI framework — and the unsynchronized randomness is
-deliberate, because two players hearing the owl a few seconds apart is nature, not lag.
+## Installation
 
-## GM quickstart
+Paste the manifest URL into Foundry's *Install Module* dialog:
 
-Open a scene's configuration → **Soundscape** tab. That's the whole interface:
+```
+https://github.com/Txpple/fvtt-mod-soundscape/releases/latest/download/module.json
+```
 
-- The tab lists the scene's sound sets — style, file count, timing, day/night gate — each
-  with an **active toggle**, **edit**, and **delete** (confirmed) control.
-- **Add from Library** picks a prebaked set from your sound library (see below): drill
-  Section → Category → Set, and it lands on the scene ready to play, editable like any
-  other set.
-- **Add Blank Set** creates an empty set and opens its editor: name, play style,
-  interval ± variation (or crossfade), volume, volume/pitch variation, when to play, and
-  the file pool. Changes save with **Save Changes**; closing without saving discards.
-- **Add Sound…** in the editor opens an audio-first file picker: browse folders, **play
-  any file in place** before committing, filter by name, and add several files without the
-  window closing.
+Requires Foundry VTT v13 or v14. The module works with any game system and has no dependencies.
 
-Sounds start when a client is viewing the scene and stop when it leaves. Sliding the
-scene's darkness across 0.5 starts and stops day/night-gated sets live.
+## Setting up a scene
+
+Open a scene's configuration and go to the **Soundscape** tab. It lists the scene's sound sets with
+their style, file count, timing and day or night gate, and each row has an on/off toggle, an edit
+button and a delete button that asks first.
+
+- **Add Blank Set** creates an empty set and opens its editor.
+- **Add from Library** clones a prebuilt set from the sound library (see below) onto the scene,
+  ready to play and editable like any other.
+
+The editor covers one set: name, active, play style, interval and variation (or crossfade for a
+loop), volume, volume variation, pitch variation, when to play, and the file list. Each file can be
+played in place before you commit. Edits are kept in the window until **Save Changes**; closing
+without saving discards them. A set with no files stays silent.
+
+**Add Sound…** opens a picker built for audio. Browse folders anywhere under Data, play any file in
+place, filter by name, and add several files without the window closing.
+
+Sounds start when a client views the scene and stop when it leaves. If a file is missing or broken,
+it is logged and skipped, and the rest of the pool keeps playing.
 
 ## The sound library
 
-The library is optional server-side content, deliberately not shipped with the module: a
-manifest at `Data/soundscape-sfx/library.json` listing prebaked sets — name, section
-(*Ambient Loops* / *Interval Sounds*), category, timing, and file paths — in the same
-schema the module stores on scenes. If it exists, **Add from Library** offers it; if not,
-the module works fully from your own audio files. Build it from any sounds you have the
-rights to use.
+The library is optional and not shipped with the module. It is a manifest at
+`Data/soundscape-sfx/library.json` listing prebuilt sets (name, section, category, timing and file
+paths) in the same shape the module stores on scenes. Sections are *Ambient Loops* and *Interval
+Sounds*, and **Add from Library** drills Section, Category, then Set. Without a library the module
+works fully from your own audio files; build one from any sounds you have the rights to use.
 
 ## Scripting
 
@@ -55,25 +71,14 @@ rights to use.
 ```js
 api.getSets(scene);                 // the scene's sound sets, normalized
 await api.upsertSet(scene, set);    // add or replace a set (matched by id)
-await api.removeSet(scene, id);
+await api.removeSet(scene, id);     // remove a set; true when one was removed
 api.open(scene, setId);             // open a set's editor window
 api.status();                       // { ducked, darkness, running: [set ids] } on this client
 ```
 
-## Compatibility
-
-System-agnostic. Foundry **v13+**, verified on v14. If an audio file is missing or broken
-the engine logs it and plays the rest of the pool — it fails open, never silent when it
-can help it.
-
-## Installation
-
-Install via manifest URL:
-
-```
-https://github.com/Txpple/fvtt-mod-soundscape/releases/latest/download/module.json
-```
+Sets live in the scene's `flags.fvtt-mod-soundscape.sets`. Malformed values are repaired to safe
+defaults, never thrown on.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
