@@ -77,12 +77,40 @@ api.status();                       // { ducked, darkness, running: [set ids] } 
 ```
 
 Sets live in the scene's `flags.fvtt-mod-soundscape.sets`. Malformed values are repaired to safe
-defaults, never thrown on.
+defaults, never thrown on. The Open Roll 5e dnd5e MCP server writes the same flags through its
+`configure-soundscape` tool, so a scene's sound can also be authored from Claude Code.
 
-## Sister modules
+## Repository layout
 
-Soundscape is one of the Open Roll 5e modules for Foundry VTT. Each installs and works on its own and
-none needs another; together they cover the table from the fog of war to the loot. The rest of the family:
+```
+module.json              the Foundry manifest
+scripts/
+  soundscape.js          the module's entry point
+  engine.js              the scheduler: intervals, crossfaded loops, ducking, day and night
+  driver.js              starts and stops the engine as clients view scenes
+  config.js              the Soundscape tab on the scene configuration and the set editor
+  picker.js              the audio file picker
+styles/  templates/      the tab, the editor and the picker
+tools/
+  test-engine.mjs        exercises the scheduling engine
+  verify-soundscape.mjs  the live suite against the local sandbox
+design.md                what was decided while building
+```
+
+## Development
+
+There is no build step: the module is plain ES modules loaded straight from `scripts/`. The live
+suite runs against the local sandbox through the house MCP repo (`fvtt-mcp-dnd5e`, a `file:` dev
+dependency beside this one); run `npm install` once. Releases: bump `version` and the `download`
+URL in `module.json` together, tag `vX.Y.Z`, and publish a zip of `module.json`, `README.md`,
+`LICENSE`, `scripts/`, `styles/` and `templates/` with the manifest as a GitHub release.
+
+<!-- openroll5e:family -->
+## Part of Open Roll 5e
+
+Soundscape is one of the Open Roll 5e modules for Foundry VTT, a suite built for one D&D 5e table and
+shared. Each module installs and works on its own and none needs another; together they cover the
+table from the fog of war to the loot. The other modules:
 
 - [Open Roll 5e: Autoexplore](https://github.com/Txpple/fvtt-mod-autoexplore): lets a scene start fully explored, so the whole map shows through the fog of war while tokens still need line of sight.
 - [Open Roll 5e: Battle Flow](https://github.com/Txpple/fvtt-mod-battleflow): combat automation for dnd5e 2024 rules: a hit rolls and applies its own damage, saves resolve themselves, reactions hold, and concentration is tracked. Every rule that touches a fight in the 2024 core books, Heroes of Faerûn, Arcana Unleashed and Ravenloft: The Horrors Within.
@@ -92,6 +120,15 @@ none needs another; together they cover the table from the fog of war to the loo
 - [Open Roll 5e: Loot Shelf](https://github.com/Txpple/fvtt-mod-lootshelf): loot chests and merchant shelves that players can take from, buy from and sell to without owning them, with a receipt for every trade.
 - [Open Roll 5e: Open Server](https://github.com/Txpple/fvtt-mod-openserver): for hosted worlds: clears the startup pause so players can play before the GM arrives, and gives any user a landing scene of their own.
 - [Open Roll 5e: Party Stash](https://github.com/Txpple/fvtt-mod-partystash): makes a dnd5e Group actor's inventory a working party stash: drags move instead of copying, coin moves through a dialog, and every transfer posts a receipt.
+
+Three MCP servers for [Claude Code](https://claude.com/claude-code) complete the suite:
+
+- [fvtt-mcp-dnd5e](https://github.com/Txpple/fvtt-mcp-dnd5e): builds D&D 5e content in a live Foundry world from Claude Code: a stat block becomes a complete NPC, a map image a walled and lit scene, an adventure its journals, tables and handouts.
+- [fvtt-mcp-imagegen](https://github.com/Txpple/fvtt-mcp-imagegen): makes the art with Google's Gemini image models: icons, tokens, props, portraits, illustrations and battlemap restyles, grounded in what the world already shows.
+- [fvtt-mcp-sessionscribe](https://github.com/Txpple/fvtt-mcp-sessionscribe): turns a session's Discord recording and Foundry chat log into its record: a speaker-labelled transcript, a player recap, a combat report and GM notes.
+
+How they fit together is mapped in [fvtt-suite-openroll5e](https://github.com/Txpple/fvtt-suite-openroll5e).
+<!-- /openroll5e:family -->
 
 ## License
 
