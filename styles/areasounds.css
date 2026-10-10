@@ -3,6 +3,13 @@
 
 /* ------------------------------- scene-config tab ------------------------------- */
 
+/* The nav item. Core shrinks the tab anchors to fit the row, and a one-word label wraps under
+   its icon whole; a two-word label would break at its own space instead (icon and "Area" on
+   one line, "Sounds" on the next), so the label is one unbreakable unit like a core label. */
+nav.sheet-tabs [data-tab="fvtt-mod-areasounds"] > span {
+  white-space: nowrap;
+}
+
 .areasounds-head .form-fields {
   justify-content: flex-end;
   gap: 8px;

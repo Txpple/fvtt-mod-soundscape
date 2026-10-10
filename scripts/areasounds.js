@@ -144,7 +144,7 @@ Hooks.on("renderSceneConfig", (app, element) => {
   navItem.dataset.group = "sheet";
   navItem.dataset.tab = MODULE_ID;
   if (active) navItem.classList.add("active");
-  navItem.innerHTML = `<i class="fa-solid fa-music" inert></i><span>Area Sounds</span>`;
+  navItem.innerHTML = `<i class="fa-solid fa-music" inert></i> <span>Area Sounds</span>`;
   nav.appendChild(navItem);
 
   const esc = foundry.utils.escapeHTML;
