@@ -1,20 +1,20 @@
-/* Soundscape — scene-config tab list + the one-set editor window. Leans on Foundry's own
+/* Area Sounds — scene-config tab list + the one-set editor window. Leans on Foundry's own
    theme variables so both match core light/dark without carrying a palette. */
 
 /* ------------------------------- scene-config tab ------------------------------- */
 
-.soundscape-head .form-fields {
+.areasounds-head .form-fields {
   justify-content: flex-end;
   gap: 8px;
 }
 
-.soundscape-head button {
+.areasounds-head button {
   flex: 0 0 auto;
   width: auto;
   white-space: nowrap;
 }
 
-.soundscape-list {
+.areasounds-list {
   list-style: none;
   margin: 8px 0 0;
   padding: 0;
@@ -22,7 +22,7 @@
   flex-direction: column;
 }
 
-.soundscape-list li {
+.areasounds-list li {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -30,11 +30,11 @@
   border-bottom: 1px solid var(--color-cool-4, #7a7971);
 }
 
-.soundscape-list li.inactive {
+.areasounds-list li.inactive {
   opacity: 0.55;
 }
 
-.soundscape-list li.empty {
+.areasounds-list li.empty {
   justify-content: center;
   font-style: italic;
   opacity: 0.7;
@@ -42,20 +42,20 @@
   padding: 18px 0;
 }
 
-.soundscape-list li > i {
+.areasounds-list li > i {
   flex: 0 0 18px;
   text-align: center;
   opacity: 0.8;
 }
 
-.soundscape-list .set-name {
+.areasounds-list .set-name {
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.soundscape-list .set-meta {
+.areasounds-list .set-meta {
   flex: 1;
   font-size: var(--font-size-12, 12px);
   opacity: 0.75;
@@ -65,21 +65,21 @@
   text-align: right;
 }
 
-.soundscape-list a[data-ss-action] {
+.areasounds-list a[data-ss-action] {
   flex: 0 0 auto;
   padding: 2px 4px;
 }
 
 /* --------------------------------- set editor ---------------------------------- */
 
-.fvtt-mod-soundscape .soundscape-editor {
+.fvtt-mod-areasounds .areasounds-editor {
   display: flex;
   flex-direction: column;
   gap: 8px;
   height: 100%;
 }
 
-.fvtt-mod-soundscape .soundscape-body {
+.fvtt-mod-areasounds .areasounds-body {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -88,54 +88,54 @@
   padding-right: 4px;
 }
 
-.fvtt-mod-soundscape .set-header {
+.fvtt-mod-areasounds .set-header {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 4px;
 }
 
-.fvtt-mod-soundscape .set-header input[name="name"] {
+.fvtt-mod-areasounds .set-header input[name="name"] {
   flex: 1;
   font-weight: bold;
 }
 
-.fvtt-mod-soundscape .set-header .active-toggle {
+.fvtt-mod-areasounds .set-header .active-toggle {
   display: flex;
   align-items: center;
   gap: 4px;
   white-space: nowrap;
 }
 
-.fvtt-mod-soundscape .set-header button.icon {
+.fvtt-mod-areasounds .set-header button.icon {
   flex: 0 0 var(--input-height, 2rem);
   width: var(--input-height, 2rem);
   line-height: 1;
 }
 
-.fvtt-mod-soundscape .style-radios {
+.fvtt-mod-areasounds .style-radios {
   gap: 12px;
   justify-content: flex-start;
 }
 
-.fvtt-mod-soundscape .style-radios label {
+.fvtt-mod-areasounds .style-radios label {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.fvtt-mod-soundscape .form-fields .sep {
+.fvtt-mod-areasounds .form-fields .sep {
   flex: 0;
   padding: 0 2px;
 }
 
-.fvtt-mod-soundscape .file-column {
+.fvtt-mod-areasounds .file-column {
   flex-direction: column;
   align-items: stretch;
   gap: 4px;
 }
 
-.fvtt-mod-soundscape .file-list {
+.fvtt-mod-areasounds .file-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -144,13 +144,13 @@
   gap: 2px;
 }
 
-.fvtt-mod-soundscape .file-list li {
+.fvtt-mod-areasounds .file-list li {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.fvtt-mod-soundscape .file-list code {
+.fvtt-mod-areasounds .file-list code {
   flex: 1;
   font-size: var(--font-size-12, 12px);
   overflow: hidden;
@@ -160,33 +160,33 @@
   text-align: left;
 }
 
-.fvtt-mod-soundscape .file-list a {
+.fvtt-mod-areasounds .file-list a {
   flex: 0 0 auto;
   padding: 0 2px;
 }
 
 /* --------------------------------- sound picker --------------------------------- */
 
-.fvtt-mod-soundscape .sound-picker {
+.fvtt-mod-areasounds .sound-picker {
   display: flex;
   flex-direction: column;
   gap: 6px;
   height: 100%;
 }
 
-.fvtt-mod-soundscape .picker-bar {
+.fvtt-mod-areasounds .picker-bar {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.fvtt-mod-soundscape .picker-bar button.icon {
+.fvtt-mod-areasounds .picker-bar button.icon {
   flex: 0 0 var(--input-height, 2rem);
   width: var(--input-height, 2rem);
   line-height: 1;
 }
 
-.fvtt-mod-soundscape .picker-path {
+.fvtt-mod-areasounds .picker-path {
   flex: 1;
   font-size: var(--font-size-12, 12px);
   overflow: hidden;
@@ -196,7 +196,7 @@
   text-align: left;
 }
 
-.fvtt-mod-soundscape .picker-listing {
+.fvtt-mod-areasounds .picker-listing {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -206,7 +206,7 @@
   flex-direction: column;
 }
 
-.fvtt-mod-soundscape .picker-listing li {
+.fvtt-mod-areasounds .picker-listing li {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -214,11 +214,11 @@
   border-bottom: 1px solid var(--color-cool-4, #7a7971);
 }
 
-.fvtt-mod-soundscape .picker-listing li.hidden {
+.fvtt-mod-areasounds .picker-listing li.hidden {
   display: none;
 }
 
-.fvtt-mod-soundscape .picker-listing li.empty {
+.fvtt-mod-areasounds .picker-listing li.empty {
   justify-content: center;
   font-style: italic;
   opacity: 0.7;
@@ -226,44 +226,44 @@
   padding: 18px 0;
 }
 
-.fvtt-mod-soundscape .picker-listing .dir-row {
+.fvtt-mod-areasounds .picker-listing .dir-row {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.fvtt-mod-soundscape .picker-listing .file-name {
+.fvtt-mod-areasounds .picker-listing .file-name {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.fvtt-mod-soundscape .picker-listing li.added .file-name {
+.fvtt-mod-areasounds .picker-listing li.added .file-name {
   opacity: 0.6;
 }
 
-.fvtt-mod-soundscape .picker-listing li.playing .file-name {
+.fvtt-mod-areasounds .picker-listing li.playing .file-name {
   font-weight: bold;
 }
 
-.fvtt-mod-soundscape .picker-listing .pick-state {
+.fvtt-mod-areasounds .picker-listing .pick-state {
   flex: 0 0 16px;
   text-align: center;
   opacity: 0.8;
 }
 
-.fvtt-mod-soundscape .picker-listing a[data-action] {
+.fvtt-mod-areasounds .picker-listing a[data-action] {
   flex: 0 0 auto;
   padding: 0 3px;
 }
 
-.fvtt-mod-soundscape .soundscape-footer {
+.fvtt-mod-areasounds .areasounds-footer {
   flex: 0 0 auto;
   padding-top: 4px;
 }
 
-.fvtt-mod-soundscape .soundscape-footer button {
+.fvtt-mod-areasounds .areasounds-footer button {
   width: 100%;
 }

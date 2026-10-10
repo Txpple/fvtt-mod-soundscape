@@ -1,8 +1,8 @@
 {
-  "name": "fvtt-mod-soundscape",
+  "name": "fvtt-mod-areasounds",
   "private": true,
   "type": "module",
-  "description": "Development tooling for Soundscape. NOTHING HERE SHIPS — the module is plain ES modules loaded straight from scripts/, with no build step; this file declares what tools/ imports.",
+  "description": "Development tooling for Area Sounds. NOTHING HERE SHIPS — the module is plain ES modules loaded straight from scripts/, with no build step; this file declares what tools/ imports.",
   "devDependencies": {
     "fvtt-mcp-dnd5e": "file:../fvtt-mcp-dnd5e"
   },

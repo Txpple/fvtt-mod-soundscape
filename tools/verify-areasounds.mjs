@@ -1,4 +1,4 @@
-// Live verification of house module #6, fvtt-mod-soundscape — module active, api surface,
+// Live verification of house module #6, fvtt-mod-areasounds — module active, api surface,
 // and the engine actually scheduling on a real client.
 //
 // The engine waits on game.audio.unlock (the browser autoplay gate) before scheduling.
@@ -9,7 +9,7 @@
 // Creates ZZ-prefixed sound sets on the CURRENT scene via the module's own api (volume
 // 0.01 — the box is inaudible anyway, but be polite) and removes them in `finally`.
 //
-// Run: node tools/verify-soundscape.mjs   (FOUNDRY_HOST=local for the sandbox; build fvtt-mcp-dnd5e first if its dist is stale)
+// Run: node tools/verify-areasounds.mjs   (FOUNDRY_HOST=local for the sandbox; build fvtt-mcp-dnd5e first if its dist is stale)
 import { Foundry, foundryConfig, loadEnv } from 'fvtt-mcp-dnd5e/client';
 
 const env = loadEnv();
@@ -31,22 +31,31 @@ const f = new Foundry(foundryConfig(env));
 const IDS = ['zz-verify-interval', 'zz-verify-loop', 'zz-verify-gated'];
 
 try {
-  console.log('[verify-soundscape] connecting…');
+  console.log('[verify-areasounds] connecting…');
   await f.connect();
   // Trusted gesture for the autoplay gate, then a beat for unlock → canvasReady sync.
   await f.page.mouse.click(4, 4);
   await new Promise(r => setTimeout(r, 1500));
-  console.log('[verify-soundscape] connected\n');
+  console.log('[verify-areasounds] connected\n');
 
-  const info = await f.evaluate(() => {
-    const m = game.modules.get('fvtt-mod-soundscape');
+  const info = await f.evaluate(async () => {
+    const m = game.modules.get('fvtt-mod-areasounds');
+    // A playlist sound, else the first file of the template library (either folder name).
+    let libraryFile = null;
+    for (const path of ['areasounds-sfx/library.json', 'soundscape-sfx/library.json']) {
+      const res = await fetch(path, { cache: 'no-cache' }).catch(() => null);
+      if (res?.ok) {
+        libraryFile = (await res.json())?.sets?.[0]?.files?.[0] ?? null;
+        break;
+      }
+    }
     return {
       active: !!m?.active,
       apiKeys: m?.api ? Object.keys(m.api).sort() : [],
       scene: canvas?.scene?.name ?? null,
       darkness: canvas?.scene?.environment?.darknessLevel ?? canvas?.scene?.darkness ?? 0,
       audioState: game.audio?.environment?.state ?? 'no-context',
-      testFile: game.playlists.contents.flatMap(p => p.sounds.contents)[0]?.path ?? null,
+      testFile: game.playlists.contents.flatMap(p => p.sounds.contents)[0]?.path ?? libraryFile,
     };
   }, null);
 
@@ -64,7 +73,7 @@ try {
     'environment audio context unlocked by the gesture',
     info.audioState
   );
-  assert(!!info.testFile, 'found a playlist audio file to schedule with');
+  assert(!!info.testFile, 'found an audio file to schedule with (a playlist sound or the library)');
   if (!info.testFile || !info.active) throw new Error('cannot continue the dynamic checks');
 
   // An always-on interval set, an always-on loop bed, and a set gated to whichever side of
@@ -72,7 +81,7 @@ try {
   const wrongSide = info.darkness >= 0.5 ? 'day' : 'night';
   const r1 = await f.evaluate(
     async ({ file, wrongSide }) => {
-      const api = game.modules.get('fvtt-mod-soundscape').api;
+      const api = game.modules.get('fvtt-mod-areasounds').api;
       const scene = canvas.scene;
       await api.upsertSet(scene, {
         id: 'zz-verify-interval',
@@ -117,7 +126,7 @@ try {
 
   // Let the interval set tick a few times and the bed hold, then look again.
   await new Promise(r => setTimeout(r, 6000));
-  const r2 = await f.evaluate(() => game.modules.get('fvtt-mod-soundscape').api.status(), null);
+  const r2 = await f.evaluate(() => game.modules.get('fvtt-mod-areasounds').api.status(), null);
   assert(
     r2.running.includes('zz-verify-interval') && r2.running.includes('zz-verify-loop'),
     'schedulers still alive after 6s of ticking'
@@ -128,7 +137,7 @@ try {
   const r3 = await f.evaluate(async darkness => {
     await canvas.scene.update({ environment: { darknessLevel: darkness } });
     await new Promise(r => setTimeout(r, 800));
-    return game.modules.get('fvtt-mod-soundscape').api.status();
+    return game.modules.get('fvtt-mod-areasounds').api.status();
   }, flipped);
   assert(
     r3.running.includes('zz-verify-gated'),
@@ -143,7 +152,7 @@ try {
 } finally {
   try {
     const left = await f.evaluate(async ids => {
-      const api = game.modules.get('fvtt-mod-soundscape')?.api;
+      const api = game.modules.get('fvtt-mod-areasounds')?.api;
       if (!api) return null;
       for (const id of ids) await api.removeSet(canvas.scene, id);
       await new Promise(r => setTimeout(r, 600));
@@ -159,6 +168,6 @@ try {
     console.error(`cleanup failed: ${err?.message || err}`);
   }
   await f.close?.();
-  console.log(`\n[verify-soundscape] ${passes} pass, ${fails} fail`);
+  console.log(`\n[verify-areasounds] ${passes} pass, ${fails} fail`);
   process.exit(fails ? 1 : 0);
 }

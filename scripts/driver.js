@@ -1,5 +1,5 @@
 /**
- * Soundscape — the real audio driver behind the engine's driver contract.
+ * Area Sounds — the real audio driver behind the engine's driver contract.
  *
  * Everything plays through Foundry's ENVIRONMENT audio context, so the players' Ambient
  * volume slider and the browser autoplay-unlock gate apply untouched (design.md:

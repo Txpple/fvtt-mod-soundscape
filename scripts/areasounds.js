@@ -1,30 +1,29 @@
 /**
- * Soundscape — atmospheric sound for the active scene in Foundry.
+ * Area Sounds — atmospheric sound for the active scene in Foundry.
  *
- * A scene carries N sound sets in `flags.fvtt-mod-soundscape.sets` (see design.md for the
- * binding scope). Each active set runs its own client-side scheduler: interval sets fire
- * random one-shots separated by `interval ± variation` seconds of silence; loop sets play a
- * continuous bed under equal-power crossfades. Everything is client-side and stateless —
+ * A scene carries N sound sets in `flags.fvtt-mod-areasounds.sets` (see design.md for the
+ * binding scope, store.js for the move from the old `fvtt-mod-soundscape` name). Each active
+ * set runs its own client-side scheduler: interval sets fire random one-shots separated by
+ * `interval ± variation` seconds of silence; loop sets play a continuous bed under
+ * equal-power crossfades. Everything is client-side and stateless —
  * each client reads the flags and schedules for itself; unsynchronized randomness is a
  * feature, not a bug.
  */
 
-import { SoundscapeEngine, normalizeSet } from "./engine.js";
+import { AreaSoundsEngine, normalizeSet } from "./engine.js";
 import { FoundryAudioDriver } from "./driver.js";
 import {
-  SoundscapeSetConfig,
+  AreaSoundsSetConfig,
   addFromLibrary,
   createBlankSet,
   deleteSetWithConfirm,
 } from "./config.js";
+import { MODULE_ID, getRawSets, migrateWorld, touchesSets } from "./store.js";
 
-export const MODULE_ID = "fvtt-mod-soundscape";
+export { MODULE_ID, getRawSets };
 
 const log = (msg, err) => console.warn(`${MODULE_ID} | ${msg}`, err ?? "");
-const engine = new SoundscapeEngine(new FoundryAudioDriver(), log);
-
-/** The raw sets array on a scene (plain flags read — no getFlag scope dance). */
-export const getRawSets = scene => scene?.flags?.[MODULE_ID]?.sets ?? [];
+const engine = new AreaSoundsEngine(new FoundryAudioDriver(), log);
 
 /** Scene darkness on v14's environment path, with the legacy fallback. */
 const darknessOf = scene => scene?.environment?.darknessLevel ?? scene?.darkness ?? 0;
@@ -53,7 +52,7 @@ Hooks.on("canvasTearDown", () => engine.stopAll());
 
 Hooks.on("updateScene", (scene, changes) => {
   if (scene !== canvas?.scene) return;
-  if (foundry.utils.hasProperty(changes, `flags.${MODULE_ID}`)) return syncToCanvas();
+  if (touchesSets(changes)) return syncToCanvas();
   if (
     foundry.utils.hasProperty(changes, "environment.darknessLevel") ||
     foundry.utils.hasProperty(changes, "darkness")
@@ -79,6 +78,7 @@ Hooks.on("updateCombat", (combat, changes) => {
 /* -------------------------------------------------------------------------------------- */
 
 Hooks.once("ready", () => {
+  migrateWorld(log);
   const mod = game.modules.get(MODULE_ID);
   if (mod) {
     mod.api = {
@@ -105,7 +105,7 @@ Hooks.once("ready", () => {
       /** Open a set's editor window (defaults to the viewed scene / its first set). */
       open: (scene, setId) => {
         const s = scene ?? canvas?.scene;
-        return new SoundscapeSetConfig({
+        return new AreaSoundsSetConfig({
           scene: s,
           setId: setId ?? getRawSets(s).map(normalizeSet)[0]?.id,
         }).render(true);
@@ -144,7 +144,7 @@ Hooks.on("renderSceneConfig", (app, element) => {
   navItem.dataset.group = "sheet";
   navItem.dataset.tab = MODULE_ID;
   if (active) navItem.classList.add("active");
-  navItem.innerHTML = `<i class="fa-solid fa-music" inert></i><span>Soundscape</span>`;
+  navItem.innerHTML = `<i class="fa-solid fa-music" inert></i><span>Area Sounds</span>`;
   nav.appendChild(navItem);
 
   const esc = foundry.utils.escapeHTML;
@@ -176,7 +176,7 @@ Hooks.on("renderSceneConfig", (app, element) => {
   panel.dataset.group = "sheet";
   panel.dataset.tab = MODULE_ID;
   panel.innerHTML = `
-    <div class="form-group soundscape-head">
+    <div class="form-group areasounds-head">
       <label>Sound Sets (${sets.length})</label>
       <div class="form-fields">
         <button type="button" data-ss-action="library" data-tooltip="Pick a prebaked set from the sound library">
@@ -190,7 +190,7 @@ Hooks.on("renderSceneConfig", (app, element) => {
       Ambient volume channel. It quiets down during combat and can be gated to day or night
       by scene darkness.</p>
     </div>
-    <ul class="soundscape-list">
+    <ul class="areasounds-list">
       ${rows || '<li class="empty">No sound sets yet — add one to bring this scene to life.</li>'}
     </ul>`;
 
@@ -206,11 +206,11 @@ Hooks.on("renderSceneConfig", (app, element) => {
         break;
       case "blank": {
         const set = await createBlankSet(scene);
-        new SoundscapeSetConfig({ scene, setId: set.id }).render(true);
+        new AreaSoundsSetConfig({ scene, setId: set.id }).render(true);
         break;
       }
       case "edit":
-        new SoundscapeSetConfig({ scene, setId }).render(true);
+        new AreaSoundsSetConfig({ scene, setId }).render(true);
         break;
       case "toggle": {
         const sets = getRawSets(scene).map(normalizeSet);

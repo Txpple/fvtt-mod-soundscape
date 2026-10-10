@@ -1,5 +1,5 @@
 /**
- * Soundscape — the sound picker: a slim, audio-first alternative to core's FilePicker.
+ * Area Sounds — the sound picker: a slim, audio-first alternative to core's FilePicker.
  *
  * Core's FilePicker is the whole Data browser (sources, tiles, upload) and cannot audition
  * audio. Picking sounds is a first-class action here, so this window does exactly that and
@@ -9,16 +9,17 @@
  * Data works; only audio files are shown.
  */
 
-const MODULE_ID = "fvtt-mod-soundscape";
-const DEFAULT_START = "soundscape-sfx";
+import { MODULE_ID } from "./store.js";
+
+const DEFAULT_START = "areasounds-sfx";
 const AUDIO_RE = /\.(ogg|oga|wav|mp3|flac|webm|m4a|opus|aac)$/i;
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class SoundPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
-    id: "soundscape-picker-{id}",
-    classes: ["fvtt-mod-soundscape"],
+    id: "areasounds-picker-{id}",
+    classes: ["fvtt-mod-areasounds"],
     window: { title: "Add Sounds", icon: "fa-solid fa-file-audio", resizable: true },
     position: { width: 480, height: 620 },
     actions: {
@@ -69,7 +70,7 @@ export class SoundPicker extends HandlebarsApplicationMixin(ApplicationV2) {
       dirs = (result.dirs ?? []).map(d => decodeURIComponent(d));
       files = (result.files ?? []).map(f => decodeURIComponent(f)).filter(f => AUDIO_RE.test(f));
     } catch (err) {
-      ui.notifications?.warn(`Soundscape: cannot browse "${this.path}".`);
+      ui.notifications?.warn(`Area Sounds: cannot browse "${this.path}".`);
     }
     return {
       path: this.path || "(Data root)",
@@ -133,7 +134,7 @@ export class SoundPicker extends HandlebarsApplicationMixin(ApplicationV2) {
       void sound.play({ volume: this.volume });
       this.#markPlaying(path);
     } catch (err) {
-      ui.notifications?.warn("Soundscape: that file could not be loaded.");
+      ui.notifications?.warn("Area Sounds: that file could not be loaded.");
     }
   }
 

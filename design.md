@@ -1,7 +1,7 @@
-# Soundscape — design (binding)
+# Area Sounds — design (binding)
 
 Owner-authored scope, decided 2026-08-12. This document is the north star for the module:
-when in doubt, the answer that keeps Soundscape *smaller* is the right one.
+when in doubt, the answer that keeps Area Sounds *smaller* is the right one.
 
 ## Mission
 
@@ -29,14 +29,14 @@ scheduler; N of them cost a timer and ≤2 audio nodes apiece, so the ceiling is
 ### Explicit non-goals
 
 - **No positional interval sounds** — native AmbientSound placeables own "the waterfall is
-  *here*". Soundscape sets are scene-global by design.
+  *here*". Area Sounds sets are scene-global by design.
 - **No sequences / sequential order** — random only (owner call, 2026-08-12).
 - **No client synchronization** — deliberate. Random atmosphere sounds *better*
   per-client (two players hearing the crow 3 s apart is nature, not a bug), and it
   deletes the entire socket/GM-proxy problem class. Zero sockets in this module.
 - **No clock-hours grid** — no 24-checkbox "specific hours" scheduling. Day/night gating
   is a darkness-level threshold (see below), not a calendar integration.
-- **No playlist integration** — Playlists stay the music system; Soundscape never touches
+- **No playlist integration** — Playlists stay the music system; Area Sounds never touches
   them.
 - **No per-file volume mixing UI** — one volume per set. Normalize the assets instead.
 
@@ -66,7 +66,7 @@ Everything falls out of that:
 Everything lives on the Scene document; MCP-authorable by construction.
 
 ```js
-flags["fvtt-mod-soundscape"].sets = [
+flags["fvtt-mod-areasounds"].sets = [
   {
     id: "a1b2c3",             // random id, stable across edits
     name: "Animal Cries Day",
@@ -108,9 +108,9 @@ crickets take over. Field is in the schema and wired from v1 (it's one compariso
   ApplicationV2 + Handlebars windows: the set list on the tab, a one-set editor with
   play-style radios and interval spinners, and an audio-first file picker with in-place
   preview. No Svelte/TyphonJS, no bundled UI runtime.
-- **MCP-friendly by construction.** `game.modules.get("fvtt-mod-soundscape").api` with
+- **MCP-friendly by construction.** `game.modules.get("fvtt-mod-areasounds").api` with
   `getSets(scene)` / `upsertSet(scene, set)` / `removeSet(scene, id)` — so the molten5e
-  bridge gets a `configure-soundscape` tool without UI scripting (new tool ⇒ CC restart,
+  bridge gets a `configure-area-sounds` tool without UI scripting (new tool ⇒ CC restart,
   per convention).
 - **Fail open, never destructive** (family convention): a missing file logs and skips its
   turn in the draw; a malformed set is ignored, never deleted.
@@ -119,8 +119,15 @@ crickets take over. Field is in the schema and wired from v1 (it's one compariso
 
 - House module **#6** under **Txpple** (public GitHub), sibling of openserver,
   autoexplore, combatplus, partystash, lootshelf.
-- Module id `fvtt-mod-soundscape`, title **Soundscape**, MIT, author Matthew Sippel.
-- Layout mirrors the family: `module.json` + `scripts/soundscape.js` (+ `templates/`,
+- Module id `fvtt-mod-areasounds`, title **Open Roll 5e: Area Sounds**, MIT, author Matthew
+  Sippel. Named after the Aurora toolset's area sounds, the model it follows.
+- **Renamed in 2.0.0** from `fvtt-mod-soundscape` (Soundscape), because another Foundry
+  module already carries that name. Sets moved scope: the active GM's first load copies
+  `flags["fvtt-mod-soundscape"].sets` to the new scope on every world scene and removes the
+  old one; until then reads fall back to the old scope (`scripts/store.js`). File paths are
+  never rewritten. The suggested library folder is `areasounds-sfx/`; `soundscape-sfx/` is
+  still read when it is absent.
+- Layout mirrors the family: `module.json` + `scripts/areasounds.js` (+ `templates/`,
   `styles/` for the config window). Release = manifest URL off GitHub releases.
 - Compat pins (min v13 / verify on current, system-agnostic — no dnd5e dependency) set at
   first release against the live world's versions.

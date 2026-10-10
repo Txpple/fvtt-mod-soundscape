@@ -1,10 +1,13 @@
-# Open Roll 5e: Soundscape
+# Open Roll 5e: Area Sounds
 
 A Foundry VTT module that gives each scene its own background sound. Foundry's ambient sounds are
 positional single-file loops, and playlists have no idea of silence between tracks, so there is no
-native way to say "a crow, then quiet, then a distant dog". Soundscape adds sound sets to a scene:
+native way to say "a crow, then quiet, then a distant dog". Area Sounds adds sound sets to a scene:
 pools of small audio files that either fire at random with silence in between or play as a
-continuous, seamless bed.
+continuous, seamless bed, the way area sounds work in the Aurora toolset.
+
+**Formerly Soundscape.** Version 2.0.0 renamed the module, because another Foundry package already
+has that name. See [Moving from Soundscape](#moving-from-soundscape).
 
 ## How it works
 
@@ -30,14 +33,28 @@ continuous, seamless bed.
 Paste the manifest URL into Foundry's *Install Module* dialog:
 
 ```
-https://github.com/Txpple/fvtt-mod-soundscape/releases/latest/download/module.json
+https://github.com/Txpple/fvtt-mod-areasounds/releases/latest/download/module.json
 ```
 
 Requires Foundry VTT v13 or v14. The module works with any game system and has no dependencies.
 
+## Moving from Soundscape
+
+Worlds that ran **Open Roll 5e: Soundscape** (`fvtt-mod-soundscape`) keep their sound sets:
+
+1. Install Area Sounds from the manifest URL above. Foundry treats it as a new module, so the old
+   one does not update into it.
+2. Enable Area Sounds and disable Soundscape, then uninstall Soundscape.
+3. Load the world as a GM. Area Sounds moves every scene's sets across (from
+   `flags.fvtt-mod-soundscape` to `flags.fvtt-mod-areasounds`) and says how many it moved. Until a
+   GM loads the world, it reads the old sets, so players already hear them.
+
+File paths are left as they were. A library you built under `Data/soundscape-sfx/` keeps working:
+Area Sounds reads `soundscape-sfx/library.json` when `areasounds-sfx/library.json` is absent.
+
 ## Setting up a scene
 
-Open a scene's configuration and go to the **Soundscape** tab. It lists the scene's sound sets with
+Open a scene's configuration and go to the **Area Sounds** tab. It lists the scene's sound sets with
 their style, file count, timing and day or night gate, and each row has an on/off toggle, an edit
 button and a delete button that asks first.
 
@@ -59,14 +76,14 @@ it is logged and skipped, and the rest of the pool keeps playing.
 ## The sound library
 
 The library is optional and not shipped with the module. It is a manifest at
-`Data/soundscape-sfx/library.json` listing prebuilt sets (name, section, category, timing and file
+`Data/areasounds-sfx/library.json` listing prebuilt sets (name, section, category, timing and file
 paths) in the same shape the module stores on scenes. Sections are *Ambient Loops* and *Interval
 Sounds*, and **Add from Library** drills Section, Category, then Set. Without a library the module
 works fully from your own audio files; build one from any sounds you have the rights to use.
 
 ## Scripting
 
-`game.modules.get("fvtt-mod-soundscape").api` exposes:
+`game.modules.get("fvtt-mod-areasounds").api` exposes:
 
 ```js
 api.getSets(scene);                 // the scene's sound sets, normalized
@@ -76,24 +93,25 @@ api.open(scene, setId);             // open a set's editor window
 api.status();                       // { ducked, darkness, running: [set ids] } on this client
 ```
 
-Sets live in the scene's `flags.fvtt-mod-soundscape.sets`. Malformed values are repaired to safe
+Sets live in the scene's `flags.fvtt-mod-areasounds.sets`. Malformed values are repaired to safe
 defaults, never thrown on. The Open Roll 5e dnd5e MCP server writes the same flags through its
-`configure-soundscape` tool, so a scene's sound can also be authored from Claude Code.
+`configure-area-sounds` tool, so a scene's sound can also be authored from Claude Code.
 
 ## Repository layout
 
 ```
 module.json              the Foundry manifest
 scripts/
-  soundscape.js          the module's entry point
+  areasounds.js          the module's entry point
+  store.js               where sets and the library live; the move from Soundscape
   engine.js              the scheduler: intervals, crossfaded loops, ducking, day and night
   driver.js              starts and stops the engine as clients view scenes
-  config.js              the Soundscape tab on the scene configuration and the set editor
+  config.js              the Area Sounds tab on the scene configuration and the set editor
   picker.js              the audio file picker
 styles/  templates/      the tab, the editor and the picker
 tools/
   test-engine.mjs        exercises the scheduling engine
-  verify-soundscape.mjs  the live suite against the local sandbox
+  verify-areasounds.mjs  the live suite against the local sandbox
 design.md                what was decided while building
 ```
 

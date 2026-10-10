@@ -1,5 +1,5 @@
 /**
- * Soundscape — the unified scheduler (design.md: "The unified engine").
+ * Area Sounds — the unified scheduler (design.md: "The unified engine").
  *
  * Interval and Loop are the same machine with one parameter flipped: the gap between pool
  * members. Interval sets have a positive gap — silence of `interval ± variation` seconds
@@ -266,7 +266,7 @@ export class LoopScheduler {
 /*  Engine — N independent schedulers per scene, gated by darkness, ducked under combat    */
 /* -------------------------------------------------------------------------------------- */
 
-export class SoundscapeEngine {
+export class AreaSoundsEngine {
   constructor(driver, log = () => {}) {
     this.driver = driver;
     this.log = log;

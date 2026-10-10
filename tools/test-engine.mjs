@@ -5,7 +5,7 @@
 import {
   IntervalScheduler,
   LoopScheduler,
-  SoundscapeEngine,
+  AreaSoundsEngine,
   drawNext,
   drawOrder,
   rollGap,
@@ -321,7 +321,7 @@ console.log("variations — rolls and integration");
 console.log("engine — gates, N sets, resync");
 {
   const d = new FakeDriver({ durations: { crickets: 30, farm1: 5, farm2: 5, howl1: 8, howl2: 8 } });
-  const engine = new SoundscapeEngine(d);
+  const engine = new AreaSoundsEngine(d);
   const sets = [
     { id: "farm", name: "Farm", files: ["farm1", "farm2"], interval: 20, intervalVariation: 5 },
     { id: "howls", name: "Howls", files: ["howl1", "howl2"], interval: 40, intervalVariation: 15, whenToPlay: "night" },

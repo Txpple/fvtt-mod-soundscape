@@ -1,26 +1,26 @@
 {
-  "id": "fvtt-mod-soundscape",
-  "title": "Open Roll 5e: Soundscape",
+  "id": "fvtt-mod-areasounds",
+  "title": "Open Roll 5e: Area Sounds",
   "description": "Background sound for each scene: random one-shots with silence between them and seamless crossfaded loops, gated by day or night and quieted during combat.",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "authors": [
     {
       "name": "Matthew Sippel"
     }
   ],
   "esmodules": [
-    "scripts/soundscape.js"
+    "scripts/areasounds.js"
   ],
   "styles": [
-    "styles/soundscape.css"
+    "styles/areasounds.css"
   ],
   "compatibility": {
     "minimum": "13",
     "verified": "14"
   },
-  "url": "https://github.com/Txpple/fvtt-mod-soundscape",
-  "manifest": "https://github.com/Txpple/fvtt-mod-soundscape/releases/latest/download/module.json",
-  "download": "https://github.com/Txpple/fvtt-mod-soundscape/releases/download/v1.1.1/fvtt-mod-soundscape.zip",
-  "readme": "https://github.com/Txpple/fvtt-mod-soundscape#readme",
+  "url": "https://github.com/Txpple/fvtt-mod-areasounds",
+  "manifest": "https://github.com/Txpple/fvtt-mod-areasounds/releases/latest/download/module.json",
+  "download": "https://github.com/Txpple/fvtt-mod-areasounds/releases/download/v2.0.0/fvtt-mod-areasounds.zip",
+  "readme": "https://github.com/Txpple/fvtt-mod-areasounds#readme",
   "license": "MIT"
 }

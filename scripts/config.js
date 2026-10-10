@@ -1,8 +1,8 @@
 /**
- * Soundscape — the single-set editor window and the small dialogs around it.
+ * Area Sounds — the single-set editor window and the small dialogs around it.
  *
  * The scene-config tab is the MAIN page (the set list with add/edit/remove lives there —
- * see soundscape.js); this window edits ONE set at a time, the family rule being native
+ * see areasounds.js); this window edits ONE set at a time, the family rule being native
  * ApplicationV2 + Handlebars and nothing else.
  *
  * Edits BUFFER in the window and persist on "Save Changes" (bottom, the Foundry design
@@ -15,19 +15,9 @@
 
 import { normalizeSet } from "./engine.js";
 import { SoundPicker } from "./picker.js";
-
-const MODULE_ID = "fvtt-mod-soundscape";
-
-/**
- * An optional template library: a Data-root manifest of prebaked sets (name, category, and
- * the full set schema with files pointing at uploaded audio). Lives OUTSIDE the module
- * folder on purpose — installPackage clean-reinstalls modules/<id>/ on every update.
- */
-const LIBRARY_PATH = "soundscape-sfx/library.json";
+import { LIBRARY_PATH, MODULE_ID, getRawSets as rawSets, loadLibrary } from "./store.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
-
-const rawSets = scene => scene?.flags?.[MODULE_ID]?.sets ?? [];
 
 /** Write one set back into the scene's array (replace by id, append when new). */
 async function persistSet(scene, set) {
@@ -62,19 +52,6 @@ export async function createBlankSet(scene) {
 /*  Library picker — one dialog, straight onto the scene                                  */
 /* -------------------------------------------------------------------------------------- */
 
-let libraryCache;
-
-export async function loadLibrary() {
-  if (libraryCache !== undefined) return libraryCache;
-  try {
-    const res = await fetch(LIBRARY_PATH, { cache: "no-cache" });
-    libraryCache = res.ok ? await res.json() : null;
-  } catch (err) {
-    libraryCache = null;
-  }
-  return libraryCache;
-}
-
 /**
  * Pick a prebaked set and clone it onto the scene: Section (Ambient Loops / Interval Sounds)
  * → Category → Set, as cascading selects in one dialog. Returns the new set, or null.
@@ -82,7 +59,7 @@ export async function loadLibrary() {
 export async function addFromLibrary(scene) {
   const templates = (await loadLibrary())?.sets;
   if (!Array.isArray(templates) || !templates.length) {
-    ui.notifications?.warn(`Soundscape: no template library found at ${LIBRARY_PATH}.`);
+    ui.notifications?.warn(`Area Sounds: no template library found at ${LIBRARY_PATH}.`);
     return null;
   }
   // section → category → [{index, name}]
@@ -154,24 +131,24 @@ export async function addFromLibrary(scene) {
 /*  The one-set editor                                                                    */
 /* -------------------------------------------------------------------------------------- */
 
-export class SoundscapeSetConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+export class AreaSoundsSetConfig extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
-    id: "soundscape-set-{id}",
-    classes: ["fvtt-mod-soundscape"],
+    id: "areasounds-set-{id}",
+    classes: ["fvtt-mod-areasounds"],
     window: { title: "Sound Set", icon: "fa-solid fa-music", resizable: true },
     position: { width: 540, height: "auto" },
     actions: {
-      addFile: SoundscapeSetConfig.#onAddFile,
-      removeFile: SoundscapeSetConfig.#onRemoveFile,
-      previewFile: SoundscapeSetConfig.#onPreviewFile,
-      save: SoundscapeSetConfig.#onSave,
+      addFile: AreaSoundsSetConfig.#onAddFile,
+      removeFile: AreaSoundsSetConfig.#onRemoveFile,
+      previewFile: AreaSoundsSetConfig.#onPreviewFile,
+      save: AreaSoundsSetConfig.#onSave,
     },
   };
 
   static PARTS = {
     body: {
       template: `modules/${MODULE_ID}/templates/config.hbs`,
-      scrollable: [".soundscape-body"],
+      scrollable: [".areasounds-body"],
     },
   };
 
@@ -274,7 +251,7 @@ export class SoundscapeSetConfig extends HandlebarsApplicationMixin(ApplicationV
       this.#previewIndex = index;
       void sound.play({ volume: normalizeSet(this.set).volume });
     } catch (err) {
-      ui.notifications?.warn("Soundscape: that file could not be loaded.");
+      ui.notifications?.warn("Area Sounds: that file could not be loaded.");
     }
   }
 
