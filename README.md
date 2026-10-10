@@ -126,7 +126,7 @@ URL in `module.json` together, tag `vX.Y.Z`, and publish a zip of `module.json`,
 <!-- openroll5e:family -->
 ## Part of Open Roll 5e
 
-Soundscape is one of the Open Roll 5e modules for Foundry VTT, a suite built for one D&D 5e table and
+Area Sounds is one of the Open Roll 5e modules for Foundry VTT, a suite built for one D&D 5e table and
 shared. Each module installs and works on its own and none needs another; together they cover the
 table from the fog of war to the loot. The other modules:
 
